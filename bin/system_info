@@ -1,0 +1,37 @@
+#! /bin/bash
+
+ANSI_RED="\033[31;1m"
+ANSI_GREEN="\033[32;1m"
+ANSI_YELLOW="\033[33;1m"
+ANSI_RESET="\033[0m"
+ANSI_CLEAR="\033[0K"
+
+if [ x$TRAVIS_OS_NAME = "xosx" ]; then
+    echo "$TRAVIS_OS_NAME is not yet supported"
+    exit 0
+fi
+
+function run() {
+    output=$("$@" 2>/dev/null || true)
+    if [ -n "$output" ]; then
+        echo -e "${ANSI_YELLOW}$@${ANSI_RESET}"
+        echo -e "$output\n"
+    fi
+}
+
+# All systems
+run lsb_release -a
+
+run dpkg --list
+
+run sudo -i -u $USER rvm --version
+run sudo -i -u $USER rvm list
+run sudo -i -u $USER gem list
+run sudo -i -u $USER nvm list
+run sudo -i -u $USER gvm list
+run sudo -i -u $USER pip --version
+run redis-server --version
+run riak version | grep riak
+run couchdb -V | grep couchdb
+
+run phantomjs --version
