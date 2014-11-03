@@ -18,7 +18,7 @@ end
 
 commands = YAML.load_file(File.join(File.dirname(__FILE__), '..', 'commands.yml'))['commands']
 
-(Array(commands['common']) + Array(commands[host_os])).each do |cmd|
+(Array(commands[host_os]) + Array(commands['common'])).each do |cmd|
   if cmd.is_a? Hash
     command = Array(cmd['command'])
     name    = cmd['name']
