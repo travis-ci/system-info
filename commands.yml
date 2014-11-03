@@ -1,0 +1,78 @@
+commands:
+  common:
+    - date
+
+    - command: rvm --version
+      pipe:    awk '{print $1, $2}'
+
+    - rvm list
+
+    - gem list
+
+    - nvm list
+
+    - gvm list
+
+    - pip --version
+
+    - command: redis-server --version
+      name: Redis version
+      pipe: perl -n -e '/v=([\d\.]+)/ && {print "redis-server $1\n"}'
+
+    - riak version
+
+    - command: couchdb -V
+      name: CouchDB version
+      pipe: perl -n -e '/CouchDB ([\d\.]+)/ && {print "couchdb $1\n"}'
+
+    - pre: service neo4j restart && sleep 15
+      name: Neo4j version
+      command: "wget -O- http://localhost:7474/db/data 2>/dev/null"
+      pipe: "awk -F\\\" '/neo4j_version/ {print \\\"neo4j\\\", $4}'"
+      post: service neo4j stop
+
+    - pre: sudo service cassandra restart && sleep 15
+      name: Cassandra version
+      command: /usr/local/cassandra/bin/nodetool version
+      pipe: "awk -F: '/ReleaseVersion/ {print $1, $2}'"
+      post: sudo service cassandra stop >/dev/null; sudo rm -rf /var/lib/cassandra/*"
+
+    - pre: sudo service rabbitmq-server restart >/dev/null 2>&1 && sleep 15
+      name: RabbitMQ Version
+      command: sudo rabbitmqctl status
+      pipe: "awk -F \\\" '/\\\"RabbitMQ\\\"/ {print $4}' "
+      post: sudo service rabbitmq-server stop >/dev/null
+
+    - pre: "sudo service elasticsearch restart >/dev/null 2>&1   && sleep 15"
+      name: ElasticSearch version
+      command: curl -XGET localhost:9200 2>/dev/null
+      pipe: awk -F \" '/number/ {print $4}'
+      post: sudo service elasticsearch stop >/dev/null
+
+    - command: ls -lad /usr/local/sphinx-*
+      name: Installed Sphinx versions
+      pipe: perl -n -e '/sphinx-([^\/]+)/ && {print "$1\n"}'
+
+    - command: ls -l /usr/local/bin/searchd
+      name: Default Sphinx version
+      pipe: perl -n -e '/sphinx-([^\/]+)/ && {print "$1\n"}'
+
+    - command: ls -d /usr/local/firefox-*
+      name: Installed Firefox version
+      pipe: awk -F- '{print "firefox", $2}'
+
+    - command: /usr/local/phantomjs/bin/phantomjs --version
+
+  linux:
+    - lsb_release -a
+
+    - command: COLUMNS=200 dpkg --list
+      name:    Local Packages (via APT)
+      pipe:    awk '/^ii/ {print $2, $3}'
+
+  osx:
+    - uname -a
+
+    - command: brew ls --versions
+      name:    Local Packages (via Homebrew)
+      pipe:    awk '{print $1, $NF}'

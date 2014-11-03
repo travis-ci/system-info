@@ -1,37 +1,43 @@
-#! /bin/bash
+#!/usr/bin/env ruby
 
-ANSI_RED="\033[31;1m"
-ANSI_GREEN="\033[32;1m"
-ANSI_YELLOW="\033[33;1m"
-ANSI_RESET="\033[0m"
-ANSI_CLEAR="\033[0K"
+require 'term/ansicolor'
+require 'rbconfig'
+require 'yaml'
+require 'stringio'
 
-if [ x$TRAVIS_OS_NAME = "xosx" ]; then
-    echo "$TRAVIS_OS_NAME is not yet supported"
-    exit 0
-fi
+include Term::ANSIColor
 
-function run() {
-    output=$("$@" 2>/dev/null || true)
-    if [ -n "$output" ]; then
-        echo -e "${ANSI_YELLOW}$@${ANSI_RESET}"
-        echo -e "$output\n"
-    fi
-}
+host_os = case RbConfig::CONFIG['host_os']
+when /^darwin/
+  'osx'
+when /^linux/
+  'linux'
+else
+  raise "Unknown host OS: #{RbConfig::CONFIG['host_os']}"
+end
 
-# All systems
-run lsb_release -a
+commands = YAML.load_file(File.join(File.dirname(__FILE__), '..', 'commands.yml'))['commands']
 
-run dpkg --list
+(Array(commands['common']) + Array(commands[host_os])).each do |cmd|
+  if cmd.is_a? Hash
+    command = Array(cmd['command'])
+    name    = cmd['name']
+    pipe    = " | #{cmd['pipe']}"
+    pre     = cmd['pre']
+    post    = cmd['post']
+  else
+    command = cmd
+  end
 
-run sudo -i -u $USER rvm --version
-run sudo -i -u $USER rvm list
-run sudo -i -u $USER gem list
-run sudo -i -u $USER nvm list
-run sudo -i -u $USER gvm list
-run sudo -i -u $USER pip --version
-run redis-server --version
-run riak version | grep riak
-run couchdb -V | grep couchdb
+  pre && %x(#{pre})
 
-run phantomjs --version
+  invoke = ['bash', '-l', '-c', '\'', command, '\'', pipe].compact.flatten.join " "
+  output = %x(#{invoke} 2>/dev/null).chomp
+
+  post && %x(#{post})
+
+  if output.length > 0
+    print yellow, bold, (name || Array(command).join(" ")), reset, "\n"
+    print output, "\n"
+  end
+end
