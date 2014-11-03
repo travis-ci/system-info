@@ -63,6 +63,47 @@ commands:
 
     - command: /usr/local/phantomjs/bin/phantomjs --version
 
+    # Android
+    - command: android list sdk --no-ui --all --extended
+      pipe: awk -F\" '/^id/ {print $2}' | sort
+    - command: ant -version
+    - command: mvn -version
+    - command: gradle -version
+
+    # Erlang
+    - command: kerl list installations
+    - command: rebar --version
+
+    # Go
+    # has nothing special to run
+
+    # Haskell
+    - command: ls -l /usr/local/ghc
+
+    # JVM
+    - command: lein1 version
+    - command: lein2 version
+    - command: lein version
+
+    # Node.js
+    # has nothing special to run
+
+    # Perl
+    - command: perlbrew list
+
+    # PHP
+    - command: phpenv versions
+    - command: composer --version
+
+    # Python
+    - command: ls -l ~/virtualenv
+    - command: python --version
+    - command: python -c 'import sysconfig; print sysconfig.get_config_vars()'
+    - command: 'for p in virtualenv/*.*.*; do echo; source $p/bin/activate; python --version; pip list; done'
+
+    # Ruby
+    # has nothing special to run
+
   linux:
     - lsb_release -a
 
