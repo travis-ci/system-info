@@ -19,6 +19,10 @@ commands:
 
     - riak version
 
+    - command: mongod --version
+      name: MongoDB version
+      pipe: perl -n -e '/version v(.*)$/ && { print "MongoDB $1\n" }'
+
     - command: couchdb -V
       name: CouchDB version
       pipe: perl -n -e '/CouchDB ([\d\.]+)/ && {print "couchdb $1\n"}'
