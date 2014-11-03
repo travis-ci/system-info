@@ -1,7 +1,5 @@
 commands:
   common:
-    - date
-
     - command: rvm --version
       pipe:    awk '{print $1, $2}'
 
@@ -105,6 +103,8 @@ commands:
     # has nothing special to run
 
   linux:
+    - date
+
     - lsb_release -a
 
     - command: COLUMNS=200 dpkg --list
@@ -112,6 +112,8 @@ commands:
       pipe:    awk '/^ii/ {print $2, $3}'
 
   osx:
+    - date
+
     - uname -a
 
     - command: brew ls --versions
