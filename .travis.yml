@@ -1,0 +1,7 @@
+language: ruby
+env:
+- FORMAT=human COMMANDS_FILE=mini_commands.yml
+- FORMAT=human
+- FORMAT=json COMMANDS_FILE=mini_commands.yml
+- FORMAT=json
+script: bundle exec bin/system_info

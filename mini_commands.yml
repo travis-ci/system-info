@@ -1,0 +1,5 @@
+commands:
+  common:
+    - command: echo whatever 0.1.0
+      name:    Whatever version
+      pipe:    awk '{print $2}'

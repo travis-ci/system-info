@@ -7,6 +7,8 @@ require 'stringio'
 
 include Term::ANSIColor
 
+ENV['FORMAT'] ||= 'human'
+
 host_os = case RbConfig::CONFIG['host_os']
 when /^darwin/
   'osx'
@@ -16,7 +18,25 @@ else
   raise "Unknown host OS: #{RbConfig::CONFIG['host_os']}"
 end
 
-commands = YAML.load_file(File.join(File.dirname(__FILE__), '..', 'commands.yml'))['commands']
+commands = YAML.load_file(ENV['COMMANDS_FILE'] || File.join(File.dirname(__FILE__), '..', 'commands.yml'))['commands']
+
+def output_human_readable(job)
+  print yellow, bold, (job[:name] || Array(job[:command]).join(" ")), reset, "\n"
+  print job[:output], "\n"
+end
+
+@json_out = {system_info: []}
+
+def output_json(job)
+  @json_out[:system_info] << { name: job[:name], output: job[:output] }
+end
+
+at_exit do
+  if ENV['FORMAT'] == 'json' && !@json_out[:system_info].empty?
+    require 'json'
+    puts JSON.pretty_generate(@json_out)
+  end
+end
 
 (Array(commands[host_os]) + Array(commands['common'])).each do |cmd|
   if cmd.is_a? Hash
@@ -37,7 +57,8 @@ commands = YAML.load_file(File.join(File.dirname(__FILE__), '..', 'commands.yml'
   post && %x(#{post})
 
   if output.length > 0
-    print yellow, bold, (name || Array(command).join(" ")), reset, "\n"
-    print output, "\n"
+    job = { name: name, command: command, output: output }
+    output_human_readable(job) if ENV['FORMAT'] == 'human'
+    output_json(job) if ENV['FORMAT'] == 'json'
   end
 end
