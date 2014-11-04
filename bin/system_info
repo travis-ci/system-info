@@ -25,15 +25,16 @@ def output_human_readable(job)
   print job[:output], "\n"
 end
 
-@json_out = {system_info: []}
+@json_out = {system_info: {}}
 
 def output_json(job)
   out = job[:output].split(/\n/).reject(&:empty?)
   out = out.first if out.length == 1
   info = { output: out }
   info[:name] = job[:name] if job[:name]
-  info[:name] = job[:command] unless job[:name]
-  @json_out[:system_info] << info
+  info[:name] ||= job[:command]
+  key = job[:key] || info[:name].downcase.gsub(/[^a-zA-z0-9]/, '_').gsub(/_+/, '_')
+  @json_out[:system_info][key] = info
 end
 
 at_exit do
