@@ -28,7 +28,9 @@ end
 @json_out = {system_info: []}
 
 def output_json(job)
-  @json_out[:system_info] << { name: job[:name], output: job[:output] }
+  out = job[:output].split(/\n/).reject(&:empty?)
+  out = out.first if out.length == 1
+  @json_out[:system_info] << { name: job[:name], output: out }
 end
 
 at_exit do

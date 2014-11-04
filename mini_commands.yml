@@ -3,3 +3,6 @@ commands:
     - command: echo whatever 0.1.0
       name:    Whatever version
       pipe:    awk '{print $2}'
+    - command: echo -en "alot\n\nof\n\n\nlines\n2000"
+      name:    Nonsense Software
+      pipe:    cat
