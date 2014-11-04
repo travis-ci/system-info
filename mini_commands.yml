@@ -7,3 +7,5 @@ commands:
       name:    Nonsense Software
       pipe:    cat
     - bash --version
+    -
+      - awk --version
