@@ -48,7 +48,7 @@ commands:
     - pre: "sudo service elasticsearch restart >/dev/null 2>&1   && sleep 15"
       name: ElasticSearch version
       command: curl -XGET localhost:9200 2>/dev/null
-      pipe: "awk -F \\\" '/number/ {print $4}'"
+      pipe: awk -F \" '/number/ {print $4}'
       post: sudo service elasticsearch stop >/dev/null
 
     - command: ls -lad /usr/local/sphinx-*
@@ -67,7 +67,7 @@ commands:
 
     # Android
     - command: android list sdk --no-ui --all --extended
-      pipe: "awk -F\\\" '/^id/ {print $2}' | sort"
+      pipe: awk -F\" '/^id/ {print $2}' | sort
     - command: ant -version
     - command: mvn -version
     - command: gradle -version
