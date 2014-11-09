@@ -81,7 +81,7 @@ end
   post && %x(#{post})
 
   if output.length > 0
-    job = { name: name, command: command, output: output }
+    job = { :name => name, :command => command, :output => output }
     output_human_readable(job) if ENV['FORMAT'] == 'human'
     output_json(job) if ENV['FORMAT'] == 'json'
   end
