@@ -27,7 +27,7 @@ def output_human_readable(job)
   print job[:output], "\n"
 end
 
-@json_out = {system_info: {}}
+@json_out = {:system_info => {}}
 
 def output_json(job)
   out = job[:output].split(/\n/).reject(&:empty?)
