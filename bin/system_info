@@ -5,6 +5,7 @@ require 'rbconfig'
 require 'yaml'
 require 'stringio'
 require 'socket'
+require 'shellwords'
 
 include Term::ANSIColor
 
@@ -67,14 +68,14 @@ end
     post    = cmd['post']
     port    = cmd['port']
   else
-    command = cmd
+    command = Array(cmd)
   end
 
   pre && %x(#{pre})
 
   wait_for port if port
 
-  invoke = ['bash', '-l', '-c', '\'', command, '\'', pipe].compact.flatten.join " "
+  invoke = ['bash', '-l', '-c', command.map(&:shellescape), pipe].compact.flatten.join " "
   output = %x(#{invoke} 2>/dev/null).chomp
 
   post && %x(#{post})

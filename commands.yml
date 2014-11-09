@@ -31,14 +31,14 @@ commands:
       name: Neo4j version
       port: 7474
       command: "wget -O- http://localhost:7474/db/data 2>/dev/null"
-      pipe: "awk -F\\\" '/neo4j_version/ {print \\\"neo4j\\\", $4}'"
+      pipe: perl -ne '/neo4j_version.*?([0-9\.]+)/ && print $1'
       post: service neo4j stop
 
     - pre: sudo service cassandra restart
       name: Cassandra version
       port: 9042
       command: /usr/local/cassandra/bin/nodetool version
-      pipe: "awk -F: '/ReleaseVersion/ {print $1, $2}'"
+      pipe: perl -ne '/ReleaseVersion.*?([0-9\.]+)/ && print $1'
       post: sudo service cassandra stop; sudo rm -rf /var/lib/cassandra/*"
 
     - pre: sudo service rabbitmq-server restart
