@@ -53,7 +53,7 @@ commands:
 
     - command: ls -lad /usr/local/sphinx-*
       name: Installed Sphinx versions
-      pipe: perl -n -e '/sphinx-([^\/]+)/ && {print "$1\n"}'
+      pipe: perl -n -e '/sphinx-([^\/]+)/ && {print "$1"}'
 
     - command: ls -l /usr/local/bin/searchd
       name: Default Sphinx version
@@ -111,15 +111,15 @@ commands:
 
     - lsb_release -a
 
-    - command: COLUMNS=200 dpkg --list
-      name:    Local Packages (via APT)
-      pipe:    awk '/^ii/ {print $2, $3}'
+    # - command: COLUMNS=200 dpkg --list
+    #   name:    Local Packages (via APT)
+    #   pipe:    awk '/^ii/ {print $2, $3}'
 
   osx:
     - date
 
     - uname -a
 
-    - command: brew ls --versions
-      name:    Local Packages (via Homebrew)
-      pipe:    awk '{print $1, $NF}'
+    # - command: brew ls --versions
+    #   name:    Local Packages (via Homebrew)
+    #   pipe:    awk '{print $1, $NF}'
