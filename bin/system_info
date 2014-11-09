@@ -4,6 +4,7 @@ require 'term/ansicolor'
 require 'rbconfig'
 require 'yaml'
 require 'stringio'
+require 'socket'
 
 include Term::ANSIColor
 
@@ -37,6 +38,19 @@ def output_json(job)
   @json_out[:system_info][key] = info
 end
 
+def wait_for(port)
+  port_open = false
+  while !port_open do
+    begin
+      s = TCPSocket.new('localhost', port)
+      s.close
+      port_open = true
+    rescue Errno::ECONNREFUSED
+      sleep 1
+    end
+  end
+end
+
 at_exit do
   if ENV['FORMAT'] == 'json' && !@json_out[:system_info].empty?
     require 'json'
@@ -51,11 +65,14 @@ end
     pipe    = " | #{cmd['pipe']}"
     pre     = cmd['pre']
     post    = cmd['post']
+    port    = cmd['port']
   else
     command = cmd
   end
 
   pre && %x(#{pre})
+
+  wait_for port if port
 
   invoke = ['bash', '-l', '-c', '\'', command, '\'', pipe].compact.flatten.join " "
   output = %x(#{invoke} 2>/dev/null).chomp

@@ -27,26 +27,30 @@ commands:
       name: CouchDB version
       pipe: perl -n -e '/CouchDB ([\d\.]+)/ && {print "couchdb $1\n"}'
 
-    - pre: service neo4j restart && sleep 15
+    - pre: service neo4j restart
       name: Neo4j version
+      port: 7474
       command: "wget -O- http://localhost:7474/db/data 2>/dev/null"
       pipe: "awk -F\\\" '/neo4j_version/ {print \\\"neo4j\\\", $4}'"
       post: service neo4j stop
 
-    - pre: sudo service cassandra restart && sleep 15
+    - pre: sudo service cassandra restart
       name: Cassandra version
+      port: 9042
       command: /usr/local/cassandra/bin/nodetool version
       pipe: "awk -F: '/ReleaseVersion/ {print $1, $2}'"
-      post: sudo service cassandra stop >/dev/null; sudo rm -rf /var/lib/cassandra/*"
+      post: sudo service cassandra stop; sudo rm -rf /var/lib/cassandra/*"
 
-    - pre: sudo service rabbitmq-server restart >/dev/null 2>&1 && sleep 15
+    - pre: sudo service rabbitmq-server restart
       name: RabbitMQ Version
+      port: 5672
       command: sudo rabbitmqctl status
       pipe: "awk -F \\\" '/\\\"RabbitMQ\\\"/ {print $4}' "
       post: sudo service rabbitmq-server stop >/dev/null
 
-    - pre: "sudo service elasticsearch restart >/dev/null 2>&1   && sleep 15"
+    - pre: sudo service elasticsearch restart
       name: ElasticSearch version
+      port: 9200
       command: curl -XGET localhost:9200 2>/dev/null
       pipe: awk -F \" '/number/ {print $4}'
       post: sudo service elasticsearch stop >/dev/null
@@ -64,9 +68,11 @@ commands:
       pipe: awk -F- '{print "firefox", $2}'
 
     - command: /usr/local/phantomjs/bin/phantomjs --version
+      name: PhantomJS version
 
     # Android
     - command: android list sdk --no-ui --all --extended
+      name: Android installed components
       pipe: awk -F\" '/^id/ {print $2}' | sort
     - command: ant -version
     - command: mvn -version
