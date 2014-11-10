@@ -6,6 +6,7 @@ require 'yaml'
 require 'stringio'
 require 'socket'
 require 'shellwords'
+require 'timeout'
 
 include Term::ANSIColor
 
@@ -39,17 +40,22 @@ def output_json(job)
   @json_out[:system_info][key] = info
 end
 
-def wait_for(port)
+def wait_for(port, timer=60)
   port_open = false
-  while !port_open do
-    begin
-      s = TCPSocket.new('localhost', port)
-      s.close
-      port_open = true
-    rescue Errno::ECONNREFUSED
-      sleep 1
+  Timeout::timeout(timer) do
+    while !port_open do
+      begin
+        s = TCPSocket.new('localhost', port)
+        s.close
+        sleep 10
+        port_open = true
+      rescue Errno::ECONNREFUSED
+        sleep 1
+      end
     end
   end
+rescue Timeout::Error
+  $stderr.puts "Port #{port} still unavailable after #{timer} seconds"
 end
 
 at_exit do
