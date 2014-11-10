@@ -63,7 +63,7 @@ end
   if cmd.is_a? Hash
     command = Array(cmd['command'])
     name    = cmd['name']
-    pipe    = " | #{cmd['pipe']}"
+    pipe    = " | #{cmd['pipe']}" if cmd['pipe']
     pre     = cmd['pre']
     post    = cmd['post']
     port    = cmd['port']
