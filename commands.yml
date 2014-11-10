@@ -111,7 +111,8 @@ commands:
     # has nothing special to run
 
   linux:
-    - date
+    - command: date
+      name: Build image provisioning date and time
 
     - lsb_release -a
 
@@ -120,7 +121,8 @@ commands:
     #   pipe:    awk '/^ii/ {print $2, $3}'
 
   osx:
-    - date
+    - command: date
+      name: Build image provisioning date and time
 
     - uname -a
 
