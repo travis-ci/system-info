@@ -5,7 +5,7 @@ commands:
 
     - command: rvm list
       name: Pre-installed Ruby versions
-      pipe: env GREP_COLORS='mt=01;32' egrep -o '(j?ruby|rbx|ree)-[-0-9\.]+(-preview([0-9]+)?|-p[0-9]+|-clang)?'
+      pipe: env GREP_COLORS='mt=01;32' egrep -o '(j?ruby|rbx|ree)-[-0-9\.]+(-preview([0-9]+)?|-p[0-9]+|-clang)?' | sort | uniq
 
     - nvm list
 
