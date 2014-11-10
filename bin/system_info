@@ -66,29 +66,32 @@ at_exit do
 end
 
 (Array(commands[host_os]) + Array(commands['common'])).each do |cmd|
-  if cmd.is_a? Hash
-    command = Array(cmd['command'])
-    name    = cmd['name']
-    pipe    = " | #{cmd['pipe']}" if cmd['pipe']
-    pre     = cmd['pre']
-    post    = cmd['post']
-    port    = cmd['port']
-  else
-    command = Array(cmd)
-  end
+  begin
+    if cmd.is_a? Hash
+      command = Array(cmd['command'])
+      name    = cmd['name']
+      pipe    = " | #{cmd['pipe']}" if cmd['pipe']
+      pre     = cmd['pre']
+      post    = cmd['post']
+      port    = cmd['port']
+    else
+      command = Array(cmd)
+    end
 
-  pre && %x(#{pre})
+    pre && %x(#{pre})
 
-  wait_for port if port
+    wait_for port if port
 
-  invoke = ['bash', '-l', '-c', command.map(&:shellescape), pipe].compact.flatten.join " "
-  output = %x(#{invoke} 2>/dev/null).chomp
+    invoke = ['bash', '-l', '-c', command.map(&:shellescape), pipe].compact.flatten.join " "
+    output = %x(#{invoke} 2>/dev/null).chomp
 
-  post && %x(#{post})
+    post && %x(#{post})
 
-  if output.length > 0
-    job = { :name => name, :command => command, :output => output }
-    output_human_readable(job) if ENV['FORMAT'] == 'human'
-    output_json(job) if ENV['FORMAT'] == 'json'
+    if output.length > 0
+      job = { :name => name, :command => command, :output => output }
+      output_human_readable(job) if ENV['FORMAT'] == 'human'
+      output_json(job) if ENV['FORMAT'] == 'json'
+    end
+  rescue Errno::ENOENT
   end
 end
