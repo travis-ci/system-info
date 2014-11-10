@@ -5,8 +5,6 @@ commands:
 
     - rvm list
 
-    - gem list
-
     - nvm list
 
     - gvm list
