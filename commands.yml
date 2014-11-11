@@ -2,7 +2,7 @@ commands:
   common:
     - command: rvm list
       name: Pre-installed Ruby versions
-      pipe: env GREP_COLORS='mt=01;32' egrep -o '(j?ruby|rbx|ree)-[-0-9\.]+(-preview([0-9]+)?|-[pd][0-9]+|-clang|-[0-9\.]+)?' | sort | uniq
+      pipe: env GREP_COLORS='mt=01;32' egrep -o '(j?ruby|rbx|ree)-[^ ]+' | sort | uniq
 
     - command: nvm list
       name: Pre-installed Node.js versions
