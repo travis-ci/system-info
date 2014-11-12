@@ -2,11 +2,9 @@ commands:
   common:
     - command: gcc --version
       name: GCC version
-      pipe: head -1
 
     - command: clang --version
       name: LLVM version
-      pipe: head -1
 
     - command: rvm list
       name: Pre-installed Ruby versions
