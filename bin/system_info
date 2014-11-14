@@ -28,7 +28,7 @@ end
 commands = YAML.load_file(ENV['COMMANDS_FILE'] || File.join(File.dirname(__FILE__), '..', 'commands.yml'))['commands']
 
 def output_human_readable(job)
-  print yellow, bold, (job[:name] || Array(job[:command]).join(" ")), reset, "\n"
+  print blue, bold, (job[:name] || Array(job[:command]).join(" ")), reset, "\n"
   print job[:output], "\n"
 end
 
