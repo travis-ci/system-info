@@ -6,3 +6,6 @@ env:
 script:
 - bundle exec bin/system_info "$(curl https://api.github.com/repos/travis-ci/travis-cookbooks/git/refs/heads/master 2>/dev/null | awk -F\\\" '/sha/ {print $4}' | cut -c 1-7)"
 - grep -A1 'Cookbooks Version' system_info.txt
+- jq -r '.system_info.cookbooks_version.output' < system_info.json | grep travis-cookbooks
+- cat system_info.txt
+- jq . < system_info.json
