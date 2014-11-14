@@ -12,6 +12,8 @@ include Term::ANSIColor
 
 ENV['FORMAT'] ||= 'human'
 
+COOKBOOKS_SHA = ARGV[0]
+
 host_os = case RbConfig::CONFIG['host_os']
 when /^darwin/
   'osx'
@@ -59,7 +61,7 @@ rescue Timeout::Error
 end
 
 def in_expanded_cookbooks_tarball?
-  @match_data = /travis-ci-travis-cookbooks-(?<sha>[0-9a-f]{7})\b/.match(File.expand_path(__FILE__))
+  @match_data = /\A(?<sha>[0-9a-f]{7})\z/.match(COOKBOOKS_SHA)
 end
 
 def print_cookbooks_sha
