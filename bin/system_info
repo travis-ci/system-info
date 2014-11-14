@@ -31,7 +31,7 @@ include Term::ANSIColor
 
 ENV['FORMATS'] ||= 'human'
 
-COOKBOOKS_SHA = ENV['COOKBOOKS_SHA'] || ARGV[0]
+COOKBOOKS_SHA =  ARGV[0] || ENV['COOKBOOKS_SHA']
 COOKBOOKS_COMMIT_URL_TEMPLATE = 'https://github.com/travis-ci/travis-cookbooks/tree/%s'
 
 host_os = case RbConfig::CONFIG['host_os']
