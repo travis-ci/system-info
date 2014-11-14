@@ -67,7 +67,6 @@ def cookbooks_sha_given?
 end
 
 def print_cookbooks_sha
-  puts 'foo'
   { 'command' => "echo #{@match_data[:sha]} '#{COOKBOOKS_COMMIT_URL_TEMPLATE % @match_data[:sha]}'", 'name' => 'Cookbooks Version' } if cookbooks_sha_given?
 end
 
