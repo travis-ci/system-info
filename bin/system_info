@@ -58,6 +58,14 @@ rescue Timeout::Error
   $stderr.puts "Port #{port} still unavailable after #{timer} seconds"
 end
 
+def in_expanded_cookbooks_tarball?
+  @match_data = /travis-ci-travis-cookbooks-(?<sha>[0-9a-f]{7})\b/.match(File.expand_path(__FILE__))
+end
+
+def print_cookbooks_sha
+  { 'command' => "echo #{@match_data[:sha]}", 'name' => 'Cookbooks Version' } if in_expanded_cookbooks_tarball?
+end
+
 at_exit do
   if ENV['FORMAT'] == 'json' && !@json_out[:system_info].empty?
     require 'json'
@@ -65,7 +73,7 @@ at_exit do
   end
 end
 
-(Array(commands[host_os]) + Array(commands['common'])).each do |cmd|
+(Array(commands[host_os]) + [ print_cookbooks_sha ] + Array(commands['common'])).compact.each do |cmd|
   begin
     if cmd.is_a? Hash
       command = Array(cmd['command'])
