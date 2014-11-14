@@ -62,13 +62,13 @@ rescue Timeout::Error
   $stderr.puts "Port #{port} still unavailable after #{timer} seconds"
 end
 
-def in_expanded_cookbooks_tarball?
+def cookbooks_sha_given?
   @match_data = /\A(?<sha>[0-9a-f]{7})\z/.match(COOKBOOKS_SHA)
 end
 
 def print_cookbooks_sha
   puts 'foo'
-  { 'command' => "echo #{@match_data[:sha]} '(#{COOKBOOKS_COMMIT_URL_TEMPLATE % @match_data[:sha]})'", 'name' => 'Cookbooks Version' } if in_expanded_cookbooks_tarball?
+  { 'command' => "echo #{@match_data[:sha]} '#{COOKBOOKS_COMMIT_URL_TEMPLATE % @match_data[:sha]}'", 'name' => 'Cookbooks Version' } if cookbooks_sha_given?
 end
 
 at_exit do
