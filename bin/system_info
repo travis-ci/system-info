@@ -14,7 +14,7 @@ ENV['FORMAT'] ||= 'human'
 
 COOKBOOKS_SHA = ARGV[0]
 
-COOKBOOKS_COMMIT_URL_TEMPLATE = 'https://github.com/travis-ci/travis-cookbooks/commit/%s'
+COOKBOOKS_COMMIT_URL_TEMPLATE = 'https://github.com/travis-ci/travis-cookbooks/tree/%s'
 
 host_os = case RbConfig::CONFIG['host_os']
 when /^darwin/
