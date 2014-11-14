@@ -14,6 +14,8 @@ ENV['FORMAT'] ||= 'human'
 
 COOKBOOKS_SHA = ARGV[0]
 
+COOKBOOKS_COMMIT_URL_TEMPLATE = 'https://github.com/travis-ci/travis-cookbooks/commit/%s'
+
 host_os = case RbConfig::CONFIG['host_os']
 when /^darwin/
   'osx'
@@ -65,7 +67,8 @@ def in_expanded_cookbooks_tarball?
 end
 
 def print_cookbooks_sha
-  { 'command' => "echo #{@match_data[:sha]}", 'name' => 'Cookbooks Version' } if in_expanded_cookbooks_tarball?
+  puts 'foo'
+  { 'command' => "echo #{@match_data[:sha]} '(#{COOKBOOKS_COMMIT_URL_TEMPLATE % @match_data[:sha]})'", 'name' => 'Cookbooks Version' } if in_expanded_cookbooks_tarball?
 end
 
 at_exit do
