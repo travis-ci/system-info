@@ -45,8 +45,8 @@ end
 
 @system_info = {:system_info => {}}
 
-@human_stdout = ENV['HUMAN_OUTPUT'] ? File.open(ENV['HUMAN_OUTPUT']) : $stdout
-@json_stdout = ENV['JSON_OUTPUT'] ? File.open(ENV['JSON_OUTPUT']) : $stdout
+@human_stdout = ENV['HUMAN_OUTPUT'] ? File.open(ENV['HUMAN_OUTPUT'], 'w') : $stdout
+@json_stdout = ENV['JSON_OUTPUT'] ? File.open(ENV['JSON_OUTPUT'], 'w') : $stdout
 
 commands = YAML.load_file(ENV['COMMANDS_FILE'] || File.join(File.dirname(__FILE__), '..', 'commands.yml'))['commands']
 
