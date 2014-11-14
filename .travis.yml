@@ -3,7 +3,8 @@ env:
   global:
   - COOKBOOKS_SHA="`curl https://api.github.com/repos/travis-ci/travis-cookbooks/git/refs/heads/master 2>/dev/null | awk -F\\\" '/sha/ {print $4}' | cut -c 1-7` 2>/dev/null"
   matrix:
-  - FORMATS=human,json COMMANDS_FILE=mini_commands.yml
-  - FORMATS=human,json
+  - FORMATS=human,json HUMAN_OUTPUT=system_info.txt JSON_OUTPUT=system_info.json 
   - FORMATS=human,json HUMAN_OUTPUT=system_info.txt JSON_OUTPUT=system_info.json COMMANDS_FILE=mini_commands.yml
-script: bundle exec bin/system_info
+script:
+- bundle exec bin/system_info
+- grep 'Cookbooks Version' system_info.txt
