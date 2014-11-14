@@ -1,7 +1,4 @@
 language: ruby
-
-sudo: false
-
 env:
 - FORMAT=human COMMANDS_FILE=mini_commands.yml
 - FORMAT=human
