@@ -4,4 +4,4 @@ env:
 - FORMAT=human
 - FORMAT=json COMMANDS_FILE=mini_commands.yml
 - FORMAT=json
-script: bundle exec bin/system_info
+script: "bundle exec bin/system_info `curl https://api.github.com/repos/travis-ci/travis-cookbooks/git/refs/heads/master 2>/dev/null | awk -F\\\" '/sha/ {print $4}' | cut -c 1-7`"
