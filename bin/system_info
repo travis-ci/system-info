@@ -1,5 +1,24 @@
 #!/usr/bin/env ruby
 
+if ARGV[0] =~ /-h|--help|help/
+  puts <<-EOF.gsub(/^ {4}/, '')
+    Usage: #{File.basename($0)} [cookbooks-sha]
+
+    Gather and report a bunch of system information specific to the
+    travis build environment.
+
+    Influential environment variables:
+
+      COOKBOOKS_SHA - SHA1 of the travis-cookbooks tree at master, e.g. "a1b2c3d"
+      FORMATS       - Output format(s), e.g. "human,json" or "human"
+      HUMAN_OUTPUT  - Output file of the human format (default $stdout)
+      JSON_OUTPUT   - Output file of the json format (default $stdout, after human)
+      COMMANDS_FILE - YAML commands file to run (default commands.yml)
+
+  EOF
+  exit 0
+end
+
 require 'term/ansicolor'
 require 'rbconfig'
 require 'yaml'
@@ -10,10 +29,9 @@ require 'timeout'
 
 include Term::ANSIColor
 
-ENV['FORMAT'] ||= 'human'
+ENV['FORMATS'] ||= 'human'
 
-COOKBOOKS_SHA = ARGV[0]
-
+COOKBOOKS_SHA =  ARGV[0] || ENV['COOKBOOKS_SHA']
 COOKBOOKS_COMMIT_URL_TEMPLATE = 'https://github.com/travis-ci/travis-cookbooks/tree/%s'
 
 host_os = case RbConfig::CONFIG['host_os']
@@ -25,14 +43,17 @@ else
   raise "Unknown host OS: #{RbConfig::CONFIG['host_os']}"
 end
 
+@system_info = {:system_info => {}}
+
+@human_stdout = ENV['HUMAN_OUTPUT'] ? File.open(ENV['HUMAN_OUTPUT'], 'w') : $stdout
+@json_stdout = ENV['JSON_OUTPUT'] ? File.open(ENV['JSON_OUTPUT'], 'w') : $stdout
+
 commands = YAML.load_file(ENV['COMMANDS_FILE'] || File.join(File.dirname(__FILE__), '..', 'commands.yml'))['commands']
 
 def output_human_readable(job)
-  print blue, bold, (job[:name] || Array(job[:command]).join(" ")), reset, "\n"
-  print job[:output], "\n"
+  @human_stdout.print blue, bold, (job[:name] || Array(job[:command]).join(" ")), reset, "\n"
+  @human_stdout.print job[:output], "\n"
 end
-
-@json_out = {:system_info => {}}
 
 def output_json(job)
   out = job[:output].split(/\n/).reject(&:empty?)
@@ -41,7 +62,7 @@ def output_json(job)
   info[:name] = job[:name] if job[:name]
   info[:name] ||= job[:command]
   key = job[:key] || [*info[:name]].first.downcase.gsub(/[^a-zA-z0-9]/, '_').gsub(/_+/, '_').sub(/_*$/, '')
-  @json_out[:system_info][key] = info
+  @system_info[:system_info][key] = info
 end
 
 def wait_for(port, timer=60)
@@ -71,9 +92,9 @@ def print_cookbooks_sha
 end
 
 at_exit do
-  if ENV['FORMAT'] == 'json' && !@json_out[:system_info].empty?
+  if ENV['FORMATS'] =~ /\bjson\b/ && !@system_info[:system_info].empty?
     require 'json'
-    puts JSON.pretty_generate(@json_out)
+    @json_stdout.puts JSON.pretty_generate(@system_info)
   end
 end
 
@@ -101,8 +122,8 @@ end
 
     if output.length > 0
       job = { :name => name, :command => command, :output => output }
-      output_human_readable(job) if ENV['FORMAT'] == 'human'
-      output_json(job) if ENV['FORMAT'] == 'json'
+      output_human_readable(job) if ENV['FORMATS'] =~ /\bhuman\b/
+      output_json(job) if ENV['FORMATS'] =~ /\bjson\b/
     end
   rescue Errno::ENOENT
   end
