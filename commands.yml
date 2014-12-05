@@ -76,6 +76,9 @@ commands:
       name: PhantomJS version
 
     # Android
+    - command: grep Pkg.Revision /usr/local/android-sdk/tools/source.properties
+      name: Android SDK Tools Version
+      pipe: awk -F= '{ print $2 }'
     - command: android list sdk --no-ui --all --extended
       name: Android installed components
       pipe: awk -F\" '/^id/ {print $2}' | sort
