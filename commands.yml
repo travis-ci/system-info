@@ -82,7 +82,7 @@ commands:
     - command: android list sdk --no-ui --all --extended
       name: List of Android SDK components that can be specified in .travis.yml
       pipe: awk -F\" '/^id/ {print $2}' | sort
-    - command: echo 'See http://docs.travis-ci.com/user/languages/android/#How-to-install-Android-SDK-components'
+    - command: which android && echo -e "\033[33;1mSee http://docs.travis-ci.com/user/languages/android/#How-to-install-Android-SDK-components\033[0m"
     - command: ant -version
     - command: mvn -version
     - command: gradle -version
