@@ -80,8 +80,9 @@ commands:
       name: Android SDK Tools Version
       pipe: awk -F= '{ print $2 }'
     - command: android list sdk --no-ui --all --extended
-      name: Android installed components
+      name: List of Android SDK components that can be specified in .travis.yml
       pipe: awk -F\" '/^id/ {print $2}' | sort
+    - command: echo 'See http://docs.travis-ci.com/user/languages/android/#How-to-install-Android-SDK-components'
     - command: ant -version
     - command: mvn -version
     - command: gradle -version
