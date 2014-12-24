@@ -126,6 +126,8 @@ commands:
       name: Build image provisioning date and time
 
     - lsb_release -a
+    - command: uname -sr
+      name: Linux Kernel Version
 
     # - command: COLUMNS=200 dpkg --list
     #   name:    Local Packages (via APT)
