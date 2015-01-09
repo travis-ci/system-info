@@ -138,6 +138,7 @@ commands:
       name: Build image provisioning date and time
 
     - uname -a
+    - command: sw_vers
 
     # - command: brew ls --versions
     #   name:    Local Packages (via Homebrew)
