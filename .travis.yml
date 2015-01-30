@@ -9,10 +9,14 @@ env:
   - COMMANDS_FILE=commands.yml
   - COMMANDS_FILE=mini_commands.yml
 before_script:
+- mkdir -p ~/bin
 - if ! jq --version ; then 
-    mkdir -p ~/bin ;
     curl -sLo ~/bin/jq 'http://stedolan.github.io/jq/download/linux64/jq' ;
     chmod +x ~/bin/jq ;
+  fi
+- if ! gimme --version ; then
+    curl -sLo ~/bin/gimme 'https://raw.githubusercontent.com/meatballhat/gimme/master/gimme' ;
+    chmod +x ~/bin/gimme ;
   fi
 script:
 - bundle exec bin/system_info "$(curl https://api.github.com/repos/travis-ci/travis-cookbooks/git/refs/heads/master 2>/dev/null | awk -F\\\" '/sha/ {print $4}' | cut -c 1-7)"
