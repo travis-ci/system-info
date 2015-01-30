@@ -14,9 +14,8 @@ commands:
       name: Pre-installed Node.js versions
       pipe: env GREP_COLORS='mt=01;32' egrep -o 'v[0-9\.]+' | sort | uniq
 
-    - command: gvm list
+    - command: gimme -l
       name: Pre-installed Go versions
-      pipe: env GREP_COLORS='mt=01;32' egrep -o 'go[0-9\.]+' | sort | uniq
 
     - command: redis-server --version
       name: Redis version
