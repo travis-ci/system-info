@@ -12,7 +12,7 @@ commands:
 
     - command: nvm list
       name: Pre-installed Node.js versions
-      pipe: env GREP_COLORS='mt=01;32' egrep -o 'v[0-9\.]+' | sort | uniq
+      pipe: env GREP_COLORS='mt=01;32' egrep -o '(iojs-)?v[0-9\.]+' | sort | uniq
 
     - command: gimme -l
       name: Pre-installed Go versions
