@@ -1,5 +1,8 @@
 commands:
   common:
+    - command: git --version
+      name: Git version
+
     - command: gcc --version
       name: GCC version
 
