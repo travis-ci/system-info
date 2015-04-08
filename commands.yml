@@ -91,6 +91,7 @@ commands:
 
     # Erlang
     - command: kerl list installations
+    - command: kiex list
     - command: rebar --version
 
     # Go
