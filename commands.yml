@@ -24,7 +24,7 @@ commands:
 
     - command: dpkg -l
       name: Pre-installed PostgreSQL versions
-      pipe: awk '$2 ~ /^postgresql-[0-9]+\.[0-9]+$/ {print $3}' | grep --only '^[^-]+'
+      pipe: awk '$2 ~ /^postgresql-[0-9]+\.[0-9]+$/ {print $3}' | grep -E --only '^[^-]+'
 
     - command: redis-server --version
       name: Redis version
