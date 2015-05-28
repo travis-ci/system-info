@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-if ARGV[0] =~ /-h|--help|help/
+if ARGV.first =~ /-h|--help|help/
   puts <<-EOF.gsub(/^ {4}/, '')
     Usage: #{File.basename($0)} [cookbooks-sha]
 
@@ -19,15 +19,19 @@ if ARGV[0] =~ /-h|--help|help/
   exit 0
 end
 
-require 'term/ansicolor'
+begin
+  require 'term/ansicolor'
+  include Term::ANSIColor
+rescue LoadError => e
+  warn e
+end
+
 require 'rbconfig'
 require 'yaml'
 require 'stringio'
 require 'socket'
 require 'shellwords'
 require 'timeout'
-
-include Term::ANSIColor
 
 ENV['FORMATS'] ||= 'human'
 
@@ -51,7 +55,13 @@ end
 commands = YAML.load_file(ENV['COMMANDS_FILE'] || File.join(File.dirname(__FILE__), '..', 'commands.yml'))['commands']
 
 def output_human_readable(job)
-  @human_stdout.print blue, bold, (job[:name] || Array(job[:command]).join(" ")), reset, "\n"
+  if defined?(Term) && defined?(Term::ANSIColor)
+    @human_stdout.print blue, bold, (job[:name] || Array(job[:command]).join(" ")), reset, "\n"
+    @human_stdout.print job[:output], "\n"
+    return
+  end
+
+  @human_stdout.print (job[:name] || Array(job[:command]).join(" ")), "\n"
   @human_stdout.print job[:output], "\n"
 end
 
