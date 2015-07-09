@@ -4,22 +4,13 @@ env:
   - FORMATS=human,json
   - HUMAN_OUTPUT=system_info.txt
   - JSON_OUTPUT=system_info.json 
-  - PATH=$HOME/bin:$PATH
   matrix:
   - COMMANDS_FILE=commands.yml
   - COMMANDS_FILE=mini_commands.yml
 before_script:
 - mkdir -p ~/bin
-- if ! jq --version ; then 
-    curl -sLo ~/bin/jq 'http://stedolan.github.io/jq/download/linux64/jq' ;
-    chmod +x ~/bin/jq ;
-  fi
-- if ! gimme --version ; then
-    curl -sLo ~/bin/gimme 'https://raw.githubusercontent.com/meatballhat/gimme/master/gimme' ;
-    chmod +x ~/bin/gimme ;
-  fi
-- gimme 1.4
 script:
+- bundle exec rubocop
 - bundle exec bin/system_info "$(curl https://api.github.com/repos/travis-ci/travis-cookbooks/git/refs/heads/master 2>/dev/null | awk -F\\\" '/sha/ {print $4}' | cut -c 1-7)"
 - grep -A1 'Cookbooks Version' system_info.txt
 - jq -r '.system_info.cookbooks_version.output' < system_info.json | grep travis-cookbooks
