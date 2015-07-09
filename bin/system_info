@@ -85,7 +85,7 @@ def wait_for(port, timer = 60)
           TCPSocket.new(host, port).close
           sleep 10
           port_open = true
-        rescue Errno::ECONNREFUSED
+        rescue Errno::ECONNREFUSED, Errno::ENETUNREACH
           sleep 1
         end
       end
@@ -138,5 +138,7 @@ end
       output_json(job) if ENV['FORMATS'] =~ /\bjson\b/
     end
   rescue Errno::ENOENT
+  rescue => e
+    warn e
   end
 end
