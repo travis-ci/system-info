@@ -3,6 +3,9 @@ commands:
     - command: git --version
       name: Git version
 
+    - command: bash --version
+      name: bash version
+
     - command: gcc --version
       name: GCC version
 
