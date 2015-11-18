@@ -45,7 +45,9 @@ module SystemInfo
       :commands_file,
       type: :string, aliases: '-f',
       desc: 'YAML commands file to run',
-      default: (ENV['COMMANDS_FILE'] || File.expand_path('../commands.yml', __FILE__))
+      default: (
+        ENV['COMMANDS_FILE'] || File.expand_path('../config/commands.yml', __FILE__)
+      )
     )
     desc 'report', 'runs a Travis-style system info scan/report'
     long_desc <<-LONGDESC

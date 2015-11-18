@@ -11,7 +11,10 @@ describe 'report command', integration: true do
   let(:commands_file) do
     ENV.fetch(
       'COMMANDS_FILE',
-      File.expand_path('../../../../lib/system_info/mini_commands.yml', __FILE__)
+      File.expand_path(
+        '../../../../lib/system_info/config/mini_commands.yml',
+        __FILE__
+      )
     )
   end
 
