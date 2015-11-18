@@ -70,9 +70,7 @@ module SystemInfo
         end
       end
     rescue Timeout::Error
-      $stderr.puts(
-        "Port #{port} still unavailable after #{job_port_timeout_max} seconds"
-      )
+      warn "Port #{port} unavailable after #{job_port_timeout_max} seconds"
     end
   end
 end
