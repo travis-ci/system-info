@@ -1,7 +1,7 @@
 require 'tmpdir'
 require 'fileutils'
 
-describe 'report command' do
+describe 'report command', integration: true do
   after do
     FileUtils.rm_rf(tmpdir)
   end

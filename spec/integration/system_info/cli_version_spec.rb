@@ -1,4 +1,4 @@
-describe 'version command' do
+describe 'version command', integration: true do
   before do
     $stdout = StringIO.new
     $stderr = StringIO.new

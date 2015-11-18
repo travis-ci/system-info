@@ -10,6 +10,7 @@ env:
   - HUMAN_OUTPUT=tmp/system_info.txt
   - JSON_OUTPUT=tmp/system_info.json 
   - COOKBOOKS_MASTER_URL="https://api.github.com/repos/travis-ci/travis-cookbooks/git/refs/heads/master"
+  - INTEGRATION_SPECS=1
   - COVERAGE=1
   matrix:
   - COMMANDS_FILE=lib/system_info/commands.yml
