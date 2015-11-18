@@ -58,16 +58,12 @@ module SystemInfo
       @human_stdout = options[:human_output] ? File.open(options[:human_output], 'w') : $stdout
       @json_stdout = options[:json_output] ? File.open(options[:json_output], 'w') : $stdout
 
+      @human_stdout.sync = true if @human_stdout.respond_to?(:sync=)
+      @json_stdout.sync = true if @json_stdout.respond_to?(:sync=)
+
       commands = YAML.load_file(options[:commands_file])['commands']
 
       @cookbooks_sha = (/\A(?<sha>[0-9a-f]{7})\z/.match(options[:cookbooks_sha]) || {})[:sha]
-
-      at_exit do
-        if formats.include?('json') && !@system_info[:system_info].empty?
-          require 'json'
-          @json_stdout.puts JSON.pretty_generate(@system_info)
-        end
-      end
 
       all_commands = (
         Array(commands[host_os]) + [print_cookbooks_sha] + Array(commands['common'])
@@ -107,6 +103,11 @@ module SystemInfo
         rescue => e
           warn e
         end
+      end
+
+      if formats.include?('json') && !@system_info[:system_info].empty?
+        require 'json'
+        @json_stdout.puts JSON.pretty_generate(@system_info)
       end
 
       0

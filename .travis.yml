@@ -19,11 +19,8 @@ before_script:
 - mkdir -p ~/bin tmp
 script:
 - bundle exec rubocop
-- bundle exec rspec
 - bundle exec exe/system-info help report
-- bundle exec exe/system-info 2>/dev/null
-- grep -A1 'Cookbooks Version' tmp/system_info.txt
-- jq -r '.system_info.cookbooks_version.output' < tmp/system_info.json | grep travis-cookbooks
+- bundle exec rspec
 - cat tmp/system_info.txt
 - jq . < tmp/system_info.json
 after_success:
