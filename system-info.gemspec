@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
 
   spec.summary = 'Gather and report system info for the Travis build env.'
   spec.description = 'Gather and report system info for the Travis build env, really!'
-  spec.homepage = 'https://github.com/travis-ci/system_info'
+  spec.homepage = 'https://github.com/travis-ci/system-info'
   spec.license = 'MIT'
 
   spec.files = `git ls-files -z`.split("\x0").reject do |f|
