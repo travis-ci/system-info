@@ -25,7 +25,7 @@ module SystemInfo
       :formats,
       type: :string, aliases: '-F',
       desc: 'Output format(s), e.g. "human,json" or "human"',
-      default: (ENV['FORMATS'] || 'human').split(/\s*,\s+/)
+      default: ENV['FORMATS'] || 'human'
     )
     option(
       :human_output,
@@ -36,7 +36,8 @@ module SystemInfo
     option(
       :json_output,
       type: :string, aliases: '-J',
-      desc: 'Output file of the json format (default $stdout, after human)'
+      desc: 'Output file of the json format (default $stdout, after human)',
+      default: ENV['JSON_OUTPUT']
     )
     option(
       :commands_file,
@@ -51,6 +52,12 @@ module SystemInfo
       type: :numeric, aliases: '-C',
       desc: 'Number of jobs to run concurrently',
       default: Integer(ENV['CONCURRENCY'] || 16)
+    )
+    option(
+      :job_port_timeout_max,
+      type: :numeric, aliases: '-X',
+      desc: 'Maximum timeout in seconds to wait for a job port, if applicable',
+      default: Integer(ENV['JOB_PORT_TIMEOUT_MAX'] || 60)
     )
     desc 'report', 'runs a Travis-style system info scan/report'
     long_desc <<-LONGDESC
@@ -78,7 +85,7 @@ module SystemInfo
       job_queue = Queue.new
 
       all_commands.each_with_index do |cmd, i|
-        job = SystemInfo::Job.new(cmd, i)
+        job = SystemInfo::Job.new(cmd, i, options[:job_port_timeout_max])
         jobs << job
         job_queue.push(job)
       end

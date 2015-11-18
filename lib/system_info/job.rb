@@ -3,12 +3,13 @@ require 'timeout'
 
 module SystemInfo
   class Job
-    attr_reader :cmd, :i, :output
+    attr_reader :cmd, :i, :output, :job_port_timeout_max
 
-    def initialize(cmd, i)
+    def initialize(cmd, i, job_port_timeout_max = 60)
       @cmd = cmd
       @i = i
       @output = ''
+      @job_port_timeout_max = job_port_timeout_max
     end
 
     def run
@@ -51,9 +52,10 @@ module SystemInfo
       cmd.respond_to?(:key?)
     end
 
-    def wait_for(port, timer = 60)
+    def wait_for(port)
       port_open = false
-      Timeout.timeout(timer) do
+
+      Timeout.timeout(job_port_timeout_max) do
         until port_open
           %w(127.0.0.1 localhost).each do |host|
             next if port_open
