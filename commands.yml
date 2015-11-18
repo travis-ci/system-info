@@ -9,7 +9,7 @@ commands:
     - command: gcc --version
       name: GCC version
 
-    - command: docker --version
+    - command: docker version
       name: Docker version
 
     - command: clang --version
