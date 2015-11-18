@@ -38,6 +38,8 @@ after_success:
 - mv -v $(find . -maxdepth 1 -name '*.gem') build/
 addons:
   artifacts:
+    permissions: public-read
+    cache_control: private
     paths:
     - build/
     target_paths:
