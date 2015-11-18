@@ -87,7 +87,8 @@ module SystemInfo
           wait_for(port) if port
 
           invoke = [
-            'bash', '-l', '-c', command.map(&:shellescape), pipe
+            'bash', '-l', '-c', command.map(&:shellescape), '2>/dev/null',
+            pipe
           ].compact.flatten.join(' ')
 
           output = `#{invoke} 2>/dev/null`.chomp
