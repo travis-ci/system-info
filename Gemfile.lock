@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    system-info (2.0.0)
+    system-info (2.0.1)
       term-ansicolor (~> 0.0)
       thor (~> 0.19)
 

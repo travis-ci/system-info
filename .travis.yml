@@ -27,18 +27,9 @@ script:
 - bundle exec rubocop
 - bundle exec exe/system-info help report
 - bundle exec rspec
-
 - find $TMPDIR -name 'system_info.txt' -exec cat {} \;
 - find $TMPDIR -name 'system_info.json' | xargs -n 1 jq .
-- if [[ "x$COMMANDS_FILE" = "xlib/system_info/config/commands.yml" &&
-        "x$TRAVIS_BRANCH" = "xmaster" &&
-        "x$TRAVIS_PULL_REQUEST" = "xfalse" &&
-        "x$TRAVIS_RUBY" = "x2.2.3" &&
-        "x$(lsb_release -sc)" = "xtrusty" ]] ; then
-    unset PRERELEASE_SUFFIX ;
-  else
-    export PRERELEASE_SUFFIX=pre${TRAVIS_JOB_NUMBER} ;
-  fi
+- eval "$(./bin/prerelease-suffix-check)"
 - gem build system-info.gemspec
 - export SYSTEM_INFO_GEM=$(find . -maxdepth 1 -name '*.gem' | head -1)
 - gem install "${SYSTEM_INFO_GEM}"

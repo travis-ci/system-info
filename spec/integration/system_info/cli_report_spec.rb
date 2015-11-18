@@ -2,13 +2,11 @@ require 'tmpdir'
 require 'fileutils'
 
 describe 'report command', integration: true do
-  after do
-    FileUtils.rm_rf(tmpdir)
+  def tmpdir
+    @tmpdir ||= Dir.mktmpdir
   end
 
-  let(:tmpdir) { Dir.mktmpdir }
-
-  let(:commands_file) do
+  def commands_file
     ENV.fetch(
       'COMMANDS_FILE',
       File.expand_path(
@@ -18,15 +16,15 @@ describe 'report command', integration: true do
     )
   end
 
-  let(:human_output) do
+  def human_output
     File.join(tmpdir, 'system_info.txt')
   end
 
-  let(:json_output) do
+  def json_output
     File.join(tmpdir, 'system_info.json')
   end
 
-  let(:argv) do
+  def argv
     %W(
       report
       --human-output #{human_output}
@@ -37,17 +35,19 @@ describe 'report command', integration: true do
     )
   end
 
-  it 'does not explode' do
-    expect { SystemInfo::Cli.start(argv) }.not_to raise_error
+  before :all do
+    SystemInfo::Cli.start(argv)
+  end
+
+  after :all do
+    FileUtils.rm_rf(tmpdir)
   end
 
   it 'reports cookbooks version as text' do
-    SystemInfo::Cli.start(argv)
     expect(File.read(human_output)).to match(/Cookbooks Version/)
   end
 
   it 'reports cookbooks version as json' do
-    SystemInfo::Cli.start(argv)
     report = JSON.parse(File.read(json_output))
     expect(report).to include('system_info')
     expect(report['system_info']).to include('cookbooks_version')
