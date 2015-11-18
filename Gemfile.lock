@@ -1,7 +1,8 @@
 PATH
   remote: .
   specs:
-    travis-system-info (1.1.0)
+    system-info (1.1.0)
+      term-ansicolor (~> 0)
 
 GEM
   remote: https://rubygems.org/
@@ -50,6 +51,7 @@ GEM
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.0)
     slop (3.6.0)
+    term-ansicolor (0.0.4)
 
 PLATFORMS
   ruby
@@ -61,7 +63,7 @@ DEPENDENCIES
   rspec (~> 3)
   rubocop (~> 0)
   simplecov (~> 0)
-  travis-system-info!
+  system-info!
 
 BUNDLED WITH
    1.10.6

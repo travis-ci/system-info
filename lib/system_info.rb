@@ -1,4 +1,14 @@
 #!/usr/bin/env ruby
+require 'rbconfig'
+require 'yaml'
+require 'stringio'
+require 'socket'
+require 'shellwords'
+require 'timeout'
+
+require 'term/ansicolor'
+
+include Term::ANSIColor
 
 class SystemInfo
   def self.run
@@ -24,20 +34,6 @@ class SystemInfo
       EOF
       exit 0
     end
-
-    begin
-      require 'term/ansicolor'
-      include Term::ANSIColor
-    rescue LoadError => e
-      warn e
-    end
-
-    require 'rbconfig'
-    require 'yaml'
-    require 'stringio'
-    require 'socket'
-    require 'shellwords'
-    require 'timeout'
 
     ENV['FORMATS'] ||= 'human'
 
@@ -155,7 +151,7 @@ class SystemInfo
 
   def print_cookbooks_sha
     {
-      'command' => "echo #{@cookbooks_sha]} '#{cookbooks_commit_url_template % @cookbooks_sha}'",
+      'command' => "echo #{@cookbooks_sha} '#{cookbooks_commit_url_template % @cookbooks_sha}'",
       'name' => 'Cookbooks Version'
     } if @cookbooks_sha
   end

@@ -19,7 +19,7 @@ before_script:
 script:
 - bundle exec rubocop
 - bundle exec rspec
-- bundle exec exe/travis-system-info
+- bundle exec exe/system-info
 - grep -A1 'Cookbooks Version' tmp/system_info.txt
 - jq -r '.system_info.cookbooks_version.output' < tmp/system_info.json | grep travis-cookbooks
 - cat tmp/system_info.txt
@@ -31,7 +31,7 @@ after_success:
     export PRERELEASE_SUFFIX=pre${TRAVIS_JOB_NUMBER} ;
   fi
 - mkdir -p build
-- gem build travis-system-info.gemspec
+- gem build system-info.gemspec
 - mv -v $(find . -maxdepth 1 -name '*.gem') build/
 addons:
   artifacts:
