@@ -3,6 +3,7 @@ rvm:
 - 1.9.3
 - 2.2.3
 sudo: required
+dist: trusty
 env:
   global:
   - FORMATS=human,json
