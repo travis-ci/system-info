@@ -1,18 +1,24 @@
 language: ruby
+rvm:
+- 1.9.3
+- 2.2.3
+sudo: required
 env:
   global:
   - FORMATS=human,json
-  - HUMAN_OUTPUT=system_info.txt
-  - JSON_OUTPUT=system_info.json 
+  - HUMAN_OUTPUT=tmp/system_info.txt
+  - JSON_OUTPUT=tmp/system_info.json 
+  - COOKBOOKS_MASTER_URL="https://api.github.com/repos/travis-ci/travis-cookbooks/git/refs/heads/master"
   matrix:
-  - COMMANDS_FILE=commands.yml
-  - COMMANDS_FILE=mini_commands.yml
+  - COMMANDS_FILE=lib/system_info/commands.yml
+  - COMMANDS_FILE=lib/system_info/mini_commands.yml
 before_script:
-- mkdir -p ~/bin
+- export COOKBOOKS_SHA=$(curl -s "$COOKBOOKS_MASTER_URL" | jq -r '.object.sha[0:7]')
+- mkdir -p ~/bin tmp
 script:
 - bundle exec rubocop
-- bundle exec bin/system_info "$(curl https://api.github.com/repos/travis-ci/travis-cookbooks/git/refs/heads/master 2>/dev/null | awk -F\\\" '/sha/ {print $4}' | cut -c 1-7)"
-- grep -A1 'Cookbooks Version' system_info.txt
-- jq -r '.system_info.cookbooks_version.output' < system_info.json | grep travis-cookbooks
-- cat system_info.txt
-- jq . < system_info.json
+- bundle exec exe/system-info
+- grep -A1 'Cookbooks Version' tmp/system_info.txt
+- jq -r '.system_info.cookbooks_version.output' < tmp/system_info.json | grep travis-cookbooks
+- cat tmp/system_info.txt
+- jq . < tmp/system_info.json
