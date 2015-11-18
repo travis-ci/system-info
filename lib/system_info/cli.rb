@@ -1,10 +1,7 @@
-#!/usr/bin/env ruby
 require 'rbconfig'
 require 'yaml'
-require 'stringio'
-require 'socket'
 require 'shellwords'
-require 'timeout'
+require 'thread'
 
 require 'term/ansicolor'
 require 'thor'
@@ -49,6 +46,12 @@ module SystemInfo
         ENV['COMMANDS_FILE'] || File.expand_path('../config/commands.yml', __FILE__)
       )
     )
+    option(
+      :concurrency,
+      type: :numeric, aliases: '-C',
+      desc: 'Number of jobs to run concurrently',
+      default: Integer(ENV['CONCURRENCY'] || 16)
+    )
     desc 'report', 'runs a Travis-style system info scan/report'
     long_desc <<-LONGDESC
       Gather and report a bunch of system information specific to the
@@ -69,42 +72,43 @@ module SystemInfo
 
       all_commands = (
         Array(commands[host_os]) + [print_cookbooks_sha] + Array(commands['common'])
-      )
+      ).compact
 
-      all_commands.compact.each do |cmd|
-        begin
-          if cmd.is_a?(Hash)
-            command = Array(cmd['command'])
-            name = cmd['name']
-            pipe = " | #{cmd['pipe']}" if cmd['pipe']
-            pre = cmd['pre']
-            post = cmd['post']
-            port = cmd['port']
-          else
-            command = Array(cmd)
+      jobs = []
+      job_queue = Queue.new
+
+      all_commands.each_with_index do |cmd, i|
+        job = SystemInfo::Job.new(cmd, i)
+        jobs << job
+        job_queue.push(job)
+      end
+
+      loop do
+        break if job_queue.empty?
+
+        concurrency = [options[:concurrency], all_commands.length, job_queue.size].min
+        queue_workers = (1..concurrency).map do
+          Thread.new do
+            begin
+              job_queue.pop.run
+            rescue ThreadError => e
+              warn e
+            end
           end
+        end
 
-          system(pre, [:out, :err] => '/dev/null') if pre
+        queue_workers.map(&:join)
+      end
 
-          wait_for(port) if port
-
-          invoke = [
-            'bash', '-l', '-c', command.map(&:shellescape), '2>/dev/null',
-            pipe
-          ].compact.flatten.join(' ')
-
-          output = `#{invoke} 2>/dev/null`.chomp
-
-          system(post, [:out, :err] => '/dev/null') if post
-
-          if output.length > 0
-            job = { name: name, command: command, output: output }
-            output_human_readable(job) if formats.include?('human')
-            output_json(job) if formats.include?('json')
-          end
-        rescue Errno::ENOENT
-        rescue => e
-          warn e
+      jobs.sort_by(&:i).each do |job|
+        if job.output.length > 0
+          out = {
+            name: job.name,
+            command: job.command,
+            output: job.output
+          }
+          output_human_readable(out) if formats.include?('human')
+          output_json(out) if formats.include?('json')
         end
       end
 
@@ -175,26 +179,6 @@ module SystemInfo
         )
       )
       @system_info[:system_info][key] = info
-    end
-
-    def wait_for(port, timer = 60)
-      port_open = false
-      Timeout.timeout(timer) do
-        until port_open
-          %w(127.0.0.1 localhost).each do |host|
-            next if port_open
-            begin
-              TCPSocket.new(host, port).close
-              sleep 10
-              port_open = true
-            rescue Errno::ECONNREFUSED, Errno::ENETUNREACH
-              sleep 1
-            end
-          end
-        end
-      end
-    rescue Timeout::Error
-      $stderr.puts "Port #{port} still unavailable after #{timer} seconds"
     end
 
     def print_cookbooks_sha
