@@ -1,18 +1,59 @@
 language: ruby
+
+rvm:
+- 1.9.3
+- 2.2.3
+
+sudo: required
+
+dist: trusty
+
 env:
   global:
   - FORMATS=human,json
-  - HUMAN_OUTPUT=system_info.txt
-  - JSON_OUTPUT=system_info.json 
+  - TMPDIR=$TRAVIS_BUILD_DIR/tmp
+  - INTEGRATION_SPECS=1
+  - COVERAGE=1
+  - JOB_PORT_TIMEOUT_MAX=5
+  - RUBYOPT='-W0'
   matrix:
-  - COMMANDS_FILE=commands.yml
-  - COMMANDS_FILE=mini_commands.yml
+  - COMMANDS_FILE=lib/system_info/config/commands.yml
+  - COMMANDS_FILE=lib/system_info/config/mini_commands.yml
+
 before_script:
-- mkdir -p ~/bin
+- mkdir -p ~/bin $TRAVIS_BUILD_DIR/tmp
+
 script:
 - bundle exec rubocop
-- bundle exec bin/system_info "$(curl https://api.github.com/repos/travis-ci/travis-cookbooks/git/refs/heads/master 2>/dev/null | awk -F\\\" '/sha/ {print $4}' | cut -c 1-7)"
-- grep -A1 'Cookbooks Version' system_info.txt
-- jq -r '.system_info.cookbooks_version.output' < system_info.json | grep travis-cookbooks
-- cat system_info.txt
-- jq . < system_info.json
+- bundle exec exe/system-info help report
+- bundle exec rspec
+
+- find $TMPDIR -name 'system_info.txt' -exec cat {} \;
+- find $TMPDIR -name 'system_info.json' | xargs -n 1 jq .
+- if [[ "x$COMMANDS_FILE" = "xlib/system_info/config/commands.yml" &&
+        "x$TRAVIS_BRANCH" = "xmaster" &&
+        "x$TRAVIS_PULL_REQUEST" = "xfalse" &&
+        "x$TRAVIS_RUBY" = "x2.2.3" &&
+        "x$(lsb_release -sc)" = "xtrusty" ]] ; then
+    unset PRERELEASE_SUFFIX ;
+  else
+    export PRERELEASE_SUFFIX=pre${TRAVIS_JOB_NUMBER} ;
+  fi
+- gem build system-info.gemspec
+- export SYSTEM_INFO_GEM=$(find . -maxdepth 1 -name '*.gem' | head -1)
+- gem install "${SYSTEM_INFO_GEM}"
+- hash -r
+- system-info help report
+
+after_success:
+- mkdir -p build
+- mv -v "${SYSTEM_INFO_GEM}" build/
+
+addons:
+  artifacts:
+    permissions: public-read
+    cache_control: private
+    paths:
+    - build/
+    target_paths:
+    - '/'

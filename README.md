@@ -1,4 +1,3 @@
-system_info
-===========
+# `system-info`
 
-Small utility to print relevant system information for the build image
+Gathers and reports system information specific to the travis build environment.
