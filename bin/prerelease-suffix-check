@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -o errexit
+
+if [[ "x$COMMANDS_FILE" = 'xlib/system_info/config/commands.yml' && \
+      "x$TRAVIS_BRANCH" = 'xmaster' && \
+      "x$TRAVIS_PULL_REQUEST" = 'xfalse' && \
+      "x$TRAVIS_RUBY" = 'x2.2.3' && \
+      "x$(lsb_release -sc 2>/dev/null)" = 'xtrusty' ]] ; then
+  echo '---> matches release conditions' >&2
+  echo '---> unsetting PRERELEASE_SUFFIX' >&2
+  echo 'unset PRERELEASE_SUFFIX'
+else
+  echo '---> does not match release conditions' >&2
+  echo "--->   TRAVIS_BRANCH=$TRAVIS_BRANCH" >&2
+  echo "--->   TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST" >&2
+  echo "--->   TRAVIS_RUBY=$TRAVIS_RUBY" >&2
+  echo "--->   \$(lsb_release -sc)=$(lsb_release -sc 2>/dev/null)" >&2
+  echo
+  echo '---> setting PRERELEASE_SUFFIX=pre' >&2
+  echo 'export PRERELEASE_SUFFIX=pre'
+fi
