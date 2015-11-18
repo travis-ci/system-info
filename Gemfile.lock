@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    system-info (1.1.0)
+    system-info (2.0.0)
       term-ansicolor (~> 0)
 
 GEM
@@ -57,13 +57,14 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bundler (~> 1.10)
-  pry (~> 0)
-  rake (~> 10.0)
-  rspec (~> 3)
-  rubocop (~> 0)
-  simplecov (~> 0)
+  bundler
+  pry
+  rake
+  rspec
+  rubocop
+  simplecov
   system-info!
+  term-ansicolor
 
 BUNDLED WITH
    1.10.6
