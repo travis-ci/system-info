@@ -1,3 +1,4 @@
 *.gem
 .*env
 coverage/
+build/
