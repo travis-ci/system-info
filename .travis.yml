@@ -1,9 +1,16 @@
 language: ruby
-rvm:
-- 1.9.3
-- 2.2.3
-sudo: required
-dist: trusty
+matrix:
+  include:
+  - rvm: 1.9.3
+    sudo: required
+  - rvm: 2.2.3
+    sudo: required
+  - rvm: 1.9.3
+    sudo: required
+    dist: trusty
+  - rvm: 2.2.3
+    sudo: required
+    dist: trusty
 env:
   global:
   - FORMATS=human,json
@@ -26,7 +33,10 @@ script:
 - cat tmp/system_info.txt
 - jq . < tmp/system_info.json
 after_success:
-- if [[ "x$TRAVIS_BRANCH" = "xmaster" && "x$TRAVIS_PULL_REQUEST" = "xfalse" ]] ; then
+- if [[ "x$TRAVIS_BRANCH" = "xmaster" &&
+        "x$TRAVIS_PULL_REQUEST" = "xfalse" &&
+        "x$TRAVIS_RUBY" = "x2.2.3" &&
+        "x$(lsb_release -sc)" = "xtrusty" ]] ; then
     unset PRERELEASE_SUFFIX ;
   else
     export PRERELEASE_SUFFIX=pre${TRAVIS_JOB_NUMBER} ;
