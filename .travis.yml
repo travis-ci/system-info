@@ -7,8 +7,7 @@ dist: trusty
 env:
   global:
   - FORMATS=human,json
-  - HUMAN_OUTPUT=tmp/system_info.txt
-  - JSON_OUTPUT=tmp/system_info.json 
+  - TMPDIR=$TRAVIS_BUILD_DIR/tmp
   - COOKBOOKS_MASTER_URL="https://api.github.com/repos/travis-ci/travis-cookbooks/git/refs/heads/master"
   - INTEGRATION_SPECS=1
   - COVERAGE=1
@@ -17,14 +16,14 @@ env:
   - COMMANDS_FILE=lib/system_info/mini_commands.yml
 before_script:
 - export COOKBOOKS_SHA=$(curl -s "$COOKBOOKS_MASTER_URL" | jq -r '.object.sha[0:7]')
-- mkdir -p ~/bin tmp
+- mkdir -p ~/bin $TRAVIS_BUILD_DIR/tmp
 script:
 - bundle exec rubocop
 - bundle exec exe/system-info help report
 - bundle exec rspec
-- cat tmp/system_info.txt
-- jq . < tmp/system_info.json
 after_success:
+- find $TMPDIR -name 'system_info.txt' -exec cat {} \;
+- find $TMPDIR -name 'system_info.json' | xargs -n 1 jq .
 - if [[ "x$COMMANDS_FILE" = "xlib/system_info/commands.yml" &&
         "x$TRAVIS_BRANCH" = "xmaster" &&
         "x$TRAVIS_PULL_REQUEST" = "xfalse" &&
