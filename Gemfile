@@ -8,4 +8,5 @@ gem 'rake', group: %w(development test)
 gem 'rspec', group: %w(development test)
 gem 'rubocop', group: %w(development test)
 gem 'simplecov', group: %w(development test)
-gem 'term-ansicolor'
+gem 'term-ansicolor', '~> 0.0'
+gem 'thor', '~> 0.19'

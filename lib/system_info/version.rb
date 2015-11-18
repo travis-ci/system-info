@@ -1,3 +1,3 @@
-class SystemInfo
+module SystemInfo
   VERSION = '2.0.0'
 end

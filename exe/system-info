@@ -4,4 +4,4 @@ lib = File.expand_path('../../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require 'system_info'
-exit(SystemInfo.run) if $PROGRAM_NAME == __FILE__
+SystemInfo::Cli.start(ARGV) if $PROGRAM_NAME == __FILE__
