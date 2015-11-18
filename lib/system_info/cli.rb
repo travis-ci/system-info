@@ -13,23 +13,40 @@ include Term::ANSIColor
 
 module SystemInfo
   class Cli < Thor
-    option :cookbooks_sha, type: :string, aliases: '-S',
-           desc: 'SHA1 of the travis-cookbooks tree at master, e.g. "a1b2c3d"',
-           default: ENV['COOKBOOKS_SHA']
-    option :formats, type: :string, aliases: '-F',
-           desc: 'Output format(s), e.g. "human,json" or "human"',
-           default: (ENV['FORMATS'] || 'human').split(/\s*,\s+/)
-    option :human_output, type: :string, aliases: '-H',
-           desc: 'Output file of the human format (default $stdout)',
-           default: ENV['HUMAN_OUTPUT']
-    option :json_output, type: :string, aliases: '-J',
-           desc: 'Output file of the json format (default $stdout, after human)'
-    option :commands_file, type: :string, aliases: '-f',
-           desc: 'YAML commands file to run',
-           default: (
-             ENV['COMMANDS_FILE'] ||
-             File.expand_path('../commands.yml', __FILE__)
-           )
+    desc 'version', 'report version and exit'
+    def version
+      puts "system-info #{VERSION}"
+    end
+
+    option(
+      :cookbooks_sha,
+      type: :string, aliases: '-S',
+      desc: 'SHA1 of the travis-cookbooks tree at master, e.g. "a1b2c3d"',
+      default: ENV['COOKBOOKS_SHA']
+    )
+    option(
+      :formats,
+      type: :string, aliases: '-F',
+      desc: 'Output format(s), e.g. "human,json" or "human"',
+      default: (ENV['FORMATS'] || 'human').split(/\s*,\s+/)
+    )
+    option(
+      :human_output,
+      type: :string, aliases: '-H',
+      desc: 'Output file of the human format (default $stdout)',
+      default: ENV['HUMAN_OUTPUT']
+    )
+    option(
+      :json_output,
+      type: :string, aliases: '-J',
+      desc: 'Output file of the json format (default $stdout, after human)'
+    )
+    option(
+      :commands_file,
+      type: :string, aliases: '-f',
+      desc: 'YAML commands file to run',
+      default: (ENV['COMMANDS_FILE'] || File.expand_path('../commands.yml', __FILE__))
+    )
     desc 'report', 'runs a Travis-style system info scan/report'
     long_desc <<-LONGDESC
       Gather and report a bunch of system information specific to the
