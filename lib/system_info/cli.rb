@@ -145,20 +145,14 @@ module SystemInfo
     end
 
     def output_human_readable(job)
-      if defined?(Term) && defined?(Term::ANSIColor)
-        @human_stdout.print(
-          blue,
-          bold,
-          (job[:name] || Array(job[:command]).join(' ')),
-          reset,
-          "\n"
-        )
-        @human_stdout.print(job[:output], "\n")
-        return
-      end
-
-      @human_stdout.print (job[:name] || Array(job[:command]).join(' ')), "\n"
-      @human_stdout.print job[:output], "\n"
+      @human_stdout.print(
+        blue,
+        bold,
+        (job[:name] || Array(job[:command]).join(' ')),
+        reset,
+        "\n"
+      )
+      @human_stdout.print(job[:output], "\n")
     end
 
     def output_json(job)
