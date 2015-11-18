@@ -10,6 +10,8 @@ include Term::ANSIColor
 
 module SystemInfo
   class Cli < Thor
+    COOKBOOKS_TREE_URL_TMPL = 'https://github.com/travis-ci/travis-cookbooks/tree/%s'
+
     desc 'version', 'report version and exit'
     def version
       puts "system-info #{VERSION}"
@@ -149,14 +151,6 @@ module SystemInfo
       end
     end
 
-    def cookbooks_sha
-      ENV['COOKBOOKS_SHA']
-    end
-
-    def cookbooks_commit_url_template
-      'https://github.com/travis-ci/travis-cookbooks/tree/%s'
-    end
-
     def output_human_readable(job)
       @human_stdout.print(
         blue,
@@ -190,7 +184,7 @@ module SystemInfo
     def print_cookbooks_sha
       {
         'command' => "echo #{@cookbooks_sha} " \
-                     "'#{cookbooks_commit_url_template % @cookbooks_sha}'",
+                     "'#{COOKBOOKS_TREE_URL_TMPL % @cookbooks_sha}'",
         'name' => 'Cookbooks Version'
       } if @cookbooks_sha
     end
