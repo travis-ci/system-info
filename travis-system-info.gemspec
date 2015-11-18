@@ -4,7 +4,11 @@ require 'system_info/version'
 
 Gem::Specification.new do |spec|
   spec.name = 'travis-system-info'
-  spec.version = SystemInfo::VERSION
+  if ENV['PRERELEASE_SUFFIX']
+    spec.version = "#{SystemInfo::VERSION}.#{ENV['PRERELEASE_SUFFIX']}"
+  else
+    spec.version = SystemInfo::VERSION
+  end
   spec.authors = ['Hiro Asari', 'Dan Buch']
   spec.email = ['hiro@travis-ci.org', 'dan@travis-ci.org']
 
