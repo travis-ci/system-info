@@ -1,16 +1,11 @@
 language: ruby
+rvm:
+- 1.9.3
+- 2.2.3
+sudo: required
 matrix:
   include:
-  - rvm: 1.9.3
-    sudo: required
-  - rvm: 2.2.3
-    sudo: required
-  - rvm: 1.9.3
-    sudo: required
-    dist: trusty
-  - rvm: 2.2.3
-    sudo: required
-    dist: trusty
+  - dist: trusty
 env:
   global:
   - FORMATS=human,json
