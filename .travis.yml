@@ -12,7 +12,6 @@ env:
   global:
   - FORMATS=human,json
   - TMPDIR=$TRAVIS_BUILD_DIR/tmp
-  - COOKBOOKS_MASTER_URL="https://api.github.com/repos/travis-ci/travis-cookbooks/git/refs/heads/master"
   - INTEGRATION_SPECS=1
   - COVERAGE=1
   - JOB_PORT_TIMEOUT_MAX=5
@@ -22,7 +21,6 @@ env:
   - COMMANDS_FILE=lib/system_info/config/mini_commands.yml
 
 before_script:
-- export COOKBOOKS_SHA=$(curl -s "$COOKBOOKS_MASTER_URL" | jq -r '.object.sha[0:7]')
 - mkdir -p ~/bin $TRAVIS_BUILD_DIR/tmp
 
 script:
