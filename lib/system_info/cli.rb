@@ -108,15 +108,14 @@ module SystemInfo
       end
 
       jobs.sort_by(&:i).each do |job|
-        if job.output.length > 0
-          out = {
-            name: job.name,
-            command: job.command,
-            output: job.output
-          }
-          output_human_readable(out) if formats.include?('human')
-          output_json(out) if formats.include?('json')
-        end
+        next unless job.output.length > 0
+        out = {
+          name: job.name,
+          command: job.command,
+          output: job.output
+        }
+        output_human_readable(out) if formats.include?('human')
+        output_json(out) if formats.include?('json')
       end
 
       if formats.include?('json') && !@system_info[:system_info].empty?
