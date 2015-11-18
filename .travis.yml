@@ -1,9 +1,13 @@
 language: ruby
+
 rvm:
 - 1.9.3
 - 2.2.3
+
 sudo: required
+
 dist: trusty
+
 env:
   global:
   - FORMATS=human,json
@@ -15,13 +19,16 @@ env:
   matrix:
   - COMMANDS_FILE=lib/system_info/config/commands.yml
   - COMMANDS_FILE=lib/system_info/config/mini_commands.yml
+
 before_script:
 - export COOKBOOKS_SHA=$(curl -s "$COOKBOOKS_MASTER_URL" | jq -r '.object.sha[0:7]')
 - mkdir -p ~/bin $TRAVIS_BUILD_DIR/tmp
+
 script:
 - bundle exec rubocop
 - bundle exec exe/system-info help report
 - bundle exec rspec
+
 after_success:
 - find $TMPDIR -name 'system_info.txt' -exec cat {} \;
 - find $TMPDIR -name 'system_info.json' | xargs -n 1 jq .
@@ -37,6 +44,7 @@ after_success:
 - mkdir -p build
 - gem build system-info.gemspec
 - mv -v $(find . -maxdepth 1 -name '*.gem') build/
+
 addons:
   artifacts:
     permissions: public-read
