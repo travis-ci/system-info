@@ -26,7 +26,8 @@ script:
 - cat tmp/system_info.txt
 - jq . < tmp/system_info.json
 after_success:
-- if [[ "x$TRAVIS_BRANCH" = "xmaster" &&
+- if [[ "x$COMMANDS_FILE" = "xlib/system_info/commands.yml" &&
+        "x$TRAVIS_BRANCH" = "xmaster" &&
         "x$TRAVIS_PULL_REQUEST" = "xfalse" &&
         "x$TRAVIS_RUBY" = "x2.2.3" &&
         "x$(lsb_release -sc)" = "xtrusty" ]] ; then
