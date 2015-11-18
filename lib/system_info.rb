@@ -154,7 +154,10 @@ class SystemInfo
   end
 
   def print_cookbooks_sha
-    { 'command' => "echo #{@match_data[:sha]} '#{cookbooks_commit_url_template % @cookbooks_sha}'", 'name' => 'Cookbooks Version' } if @cookbooks_sha
+    {
+      'command' => "echo #{@cookbooks_sha]} '#{cookbooks_commit_url_template % @cookbooks_sha}'",
+      'name' => 'Cookbooks Version'
+    } if @cookbooks_sha
   end
 end
 
