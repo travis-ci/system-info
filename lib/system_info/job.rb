@@ -63,7 +63,7 @@ module SystemInfo
               TCPSocket.new(host, port).close
               sleep 10
               port_open = true
-            rescue Errno::ECONNREFUSED, Errno::ENETUNREACH
+            rescue Errno::ECONNREFUSED, Errno::ENETUNREACH, Errno::EINVAL
               sleep 1
             end
           end
