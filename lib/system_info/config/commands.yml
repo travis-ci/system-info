@@ -41,6 +41,8 @@ commands:
     - command: echo "version"
       name: memcached version
       pipe: nc localhost 11211 | cut -f2 -d' '
+      pre: sudo service memcached start
+      post: sudo service memcached stop
 
     - command: mongod --version
       name: MongoDB version
