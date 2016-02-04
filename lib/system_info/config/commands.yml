@@ -38,6 +38,10 @@ commands:
 
     - riak version
 
+    - command: echo "version"
+      name: memcached version
+      pipe: nc localhost 11211 | cut -f2 -d' '
+
     - command: mongod --version
       name: MongoDB version
       pipe: perl -n -e '/version v(.*)$/ && { print "MongoDB $1\n" }'
