@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rbconfig'
 require 'yaml'
 require 'shellwords'
@@ -10,11 +11,19 @@ include Term::ANSIColor
 
 module SystemInfo
   class Cli < Thor
-    COOKBOOKS_TREE_URL_TMPL = 'https://github.com/travis-ci/travis-cookbooks/tree/%s'
+    COOKBOOKS_TREE_URL_TMPL = 'https://github.com/travis-ci/travis-cookbooks/tree/%s'.freeze
 
     desc 'version', 'report version and exit'
     def version
       puts "system-info #{VERSION}"
+    end
+
+    def self.cpu_count
+      Integer([
+        `nproc 2>/dev/null`.strip,
+        `sysctl -n hw.ncpu 2>/dev/null`.strip,
+        '1'
+      ].reject(&:empty?).max)
     end
 
     option(
@@ -53,7 +62,9 @@ module SystemInfo
       :concurrency,
       type: :numeric, aliases: '-C',
       desc: 'Number of jobs to run concurrently',
-      default: Integer(ENV['CONCURRENCY'] || 16)
+      default: Integer(
+        ENV['CONCURRENCY'] || cpu_count * 4
+      )
     )
     option(
       :job_port_timeout_max,
@@ -110,7 +121,7 @@ module SystemInfo
       end
 
       jobs.sort_by(&:i).each do |job|
-        next unless job.output.length > 0
+        next if job.output.empty?
         out = {
           name: job.name,
           command: job.command,
@@ -147,7 +158,7 @@ module SystemInfo
       when /^linux/
         @host_os = 'linux'
       else
-        fail "Unknown host OS: #{RbConfig::CONFIG['host_os']}"
+        raise "Unknown host OS: #{RbConfig::CONFIG['host_os']}"
       end
     end
 

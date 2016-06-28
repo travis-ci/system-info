@@ -1,4 +1,5 @@
-PROVISION_SCRIPT = <<-EOF
+# frozen_string_literal: true
+PROVISION_SCRIPT = <<-EOF.freeze
 set -o errexit
 
 if ! rvm version 2>/dev/null ; then
