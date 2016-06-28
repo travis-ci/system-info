@@ -14,7 +14,7 @@ if ! grep '# VAGRANT PROVISIONED' ~/.bash_profile ; then
 fi
 EOF
 
-Vagrant.configure('2') do |config|
+Vagrant.configure(2) do |config|
   config.vm.box = 'ubuntu/trusty64'
 
   config.vm.provision :shell, inline: PROVISION_SCRIPT, privileged: false

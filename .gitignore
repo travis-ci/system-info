@@ -2,3 +2,4 @@
 .*env
 coverage/
 build/
+.ruby-version
