@@ -5,9 +5,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [2.0.3] - 2016-06-28
 ### Added
 - Memcached version to default `commands.yml`
+- This file!
 
 ### Changed
 - Testing against ruby 1.9.3 and 2.3.1
+- Pinning to rubocop `~> 0.40.0` due to string freezing oddness
+- Default concurrency to 4x detected CPU count
 
 ## [2.0.2] - 2015-11-25
 ### Changed
