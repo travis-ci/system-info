@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rbconfig'
 require 'yaml'
 require 'shellwords'
@@ -120,7 +121,7 @@ module SystemInfo
       end
 
       jobs.sort_by(&:i).each do |job|
-        next unless job.output.length > 0
+        next if job.output.empty?
         out = {
           name: job.name,
           command: job.command,
@@ -157,7 +158,7 @@ module SystemInfo
       when /^linux/
         @host_os = 'linux'
       else
-        fail "Unknown host OS: #{RbConfig::CONFIG['host_os']}"
+        raise "Unknown host OS: #{RbConfig::CONFIG['host_os']}"
       end
     end
 

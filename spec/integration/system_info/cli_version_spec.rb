@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 describe 'version command', integration: true do
   before do
     $stdout = StringIO.new
