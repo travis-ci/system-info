@@ -22,6 +22,8 @@ env:
 
 before_script:
 - mkdir -p ~/bin $TRAVIS_BUILD_DIR/tmp
+- bundle exec rubocop --version
+- bundle exec rspec --version
 
 script:
 - bundle exec rubocop
