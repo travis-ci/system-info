@@ -11,7 +11,7 @@ include Term::ANSIColor
 
 module SystemInfo
   class Cli < Thor
-    COOKBOOKS_TREE_URL_TMPL = 'https://github.com/travis-ci/travis-cookbooks/tree/%s'
+    COOKBOOKS_TREE_URL_TMPL = 'https://github.com/travis-ci/travis-cookbooks/tree/%s'.freeze
 
     desc 'version', 'report version and exit'
     def version
