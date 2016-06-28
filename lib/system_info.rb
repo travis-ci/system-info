@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module SystemInfo
   autoload :Cli, 'system_info/cli'
   autoload :Job, 'system_info/job'

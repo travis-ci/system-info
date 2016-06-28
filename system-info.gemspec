@@ -1,14 +1,17 @@
+# frozen_string_literal: true
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'system_info/version'
 
 Gem::Specification.new do |spec|
   spec.name = 'system-info'
-  if ENV['PRERELEASE_SUFFIX']
-    spec.version = "#{SystemInfo::VERSION}.#{ENV['PRERELEASE_SUFFIX']}"
-  else
-    spec.version = SystemInfo::VERSION
-  end
+
+  spec.version = if ENV['PRERELEASE_SUFFIX']
+                   "#{SystemInfo::VERSION}.#{ENV['PRERELEASE_SUFFIX']}"
+                 else
+                   SystemInfo::VERSION
+                 end
+
   spec.authors = ['Hiro Asari', 'Dan Buch']
   spec.email = ['hiro@travis-ci.org', 'dan@travis-ci.org']
 
