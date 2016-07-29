@@ -119,9 +119,12 @@ commands:
     - command: ls -l /usr/local/ghc
 
     # JVM
-    - command: lein1 version
-    - command: lein2 version
-    - command: lein version
+    - command: env LEIN_ROOT=true lein1 version
+      name: lein1 version
+    - command: env LEIN_ROOT=true lein2 version
+      name: lein2 version
+    - command: env LEIN_ROOT=true lein version
+      name: lein version
 
     # Node.js
     # has nothing special to run
