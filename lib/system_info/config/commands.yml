@@ -164,6 +164,10 @@ commands:
 
     - command: sw_vers
       name: Operating System Details
+
+    - command: xcodebuild -version
+      name: Xcode version
+
     - command: uname -r
       name: Darwin Version
 
