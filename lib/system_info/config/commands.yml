@@ -137,10 +137,13 @@ commands:
     - command: composer --version
 
     # Python
-    # - command: ls -l ~/virtualenv
-    # - command: python --version
-    # - command: python -c 'import sysconfig; print sysconfig.get_config_vars()'
-    # - command: 'for p in virtualenv/*.*.*; do echo; source $p/bin/activate; python --version; pip list; done'
+    - command: pip install --user virtualenvwrapper; export WORKON_HOME=$HOME/virtualenv; source ~/.local/bin/virtualenvwrapper.sh; lsvirtualenv -b
+      name: Python virutalenvs
+
+    # System Python
+    - command: dpkg -l
+      pipe: awk '$2 ~ /^python([0-9]+(\.[0-9])*)?$/ {print $2, $3}'
+      name: Ubuntu Python packages
 
     # Ruby
     # has nothing special to run
