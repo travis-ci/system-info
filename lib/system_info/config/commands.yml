@@ -151,8 +151,6 @@ commands:
 
     - command: lsb_release -a
       name: Operating System Details
-    - command: uname -r
-      name: Linux Version
 
     # - command: COLUMNS=200 dpkg --list
     #   name:    Local Packages (via APT)
@@ -164,8 +162,6 @@ commands:
 
     - command: sw_vers
       name: Operating System Details
-    - command: uname -r
-      name: Darwin Version
 
     # - command: brew ls --versions
     #   name:    Local Packages (via Homebrew)
