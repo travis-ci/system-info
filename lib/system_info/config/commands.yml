@@ -116,7 +116,9 @@ commands:
     # has nothing special to run
 
     # Haskell
-    - command: ls -l /usr/local/ghc
+    - command: ls /opt/ghc /usr/local/ghc 2>/dev/null
+      name: Haskell versions
+      pipe: 'grep ^[0-9] | sort -V | uniq'
 
     # JVM
     - command: env LEIN_ROOT=true lein1 version
